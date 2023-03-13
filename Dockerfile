@@ -32,6 +32,21 @@ RUN apt -y update -qq && apt -y upgrade && \
 		less \
 		openjdk-17-jdk-headless
 
-# we map the user owning the image so permissions for io will work
+FROM base as builder
+RUN DEBIAN_FRONTEND=noninteractive apt -y install \
+		git
+
+WORKDIR /src
+RUN git clone -b buildfix https://github.com/hihg-um/flare.git
+RUN javac -cp flare/src/ flare/src/admix/AdmixMain.java
+RUN jar cfe flare.jar admix/AdmixMain -C flare/src/ ./
+RUN jar -i flare.jar
+
+FROM base as release
+WORKDIR /app
+COPY --from=builder /src/flare.jar .
+RUN ls -l
+
+# we map the user owning the image so permissions for i/o will work
 USER $USERNAME
 ENTRYPOINT [ "java" ]

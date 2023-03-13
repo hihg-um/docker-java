@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0
 
 ORG_NAME := hihg-um
-PROJECT_NAME ?= java
+PROJECT_NAME ?= java-flare
 OS_BASE ?= ubuntu
 OS_VER ?= 22.04
 
@@ -26,11 +26,11 @@ test: test_docker test_singularity
 
 test_docker:
 	@echo "Testing docker image: $(IMAGE)"
-	@docker run -it -v /mnt:/mnt $(IMAGE) --version
+	@docker run -it -v /mnt:/mnt $(IMAGE) -jar /app/flare.jar
 
 test_singularity: $(PROJECT_NAME).sif
 	@echo "Testing singularity image: $(PROJECT_NAME).sif"
-	@apptainer run $(PROJECT_NAME).sif --version
+	@apptainer run $(PROJECT_NAME).sif -jar /app/flare.jar
 
 clean:
 	@docker rmi -f --no-prune $(IMAGE)
