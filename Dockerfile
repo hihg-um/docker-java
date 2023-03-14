@@ -32,6 +32,8 @@ RUN apt -y update -qq && apt -y upgrade && \
 		less \
 		openjdk-17-jdk-headless
 
-# we map the user owning the image so permissions for io will work
+WORKDIR /app
+
+# we map the user owning the image so permissions for i/o will work
 USER $USERNAME
 ENTRYPOINT [ "java" ]
