@@ -43,9 +43,9 @@ RUN jar cfe flare.jar admix/AdmixMain -C flare/src/ ./
 RUN jar -i flare.jar
 
 FROM base as release
-WORKDIR /app
+WORKDIR /opt/java
 COPY --from=builder /src/flare.jar .
-RUN ls -l
+WORKDIR /app
 
 # we map the user owning the image so permissions for i/o will work
 USER $USERNAME

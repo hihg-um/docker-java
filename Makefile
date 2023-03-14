@@ -26,11 +26,11 @@ test: test_docker test_singularity
 
 test_docker:
 	@echo "Testing docker image: $(IMAGE)"
-	@docker run -it -v /mnt:/mnt $(IMAGE) -jar /app/flare.jar
+	@docker run -it -v /mnt:/mnt $(IMAGE) -jar /opt/java/flare.jar
 
 test_singularity: $(PROJECT_NAME).sif
 	@echo "Testing singularity image: $(PROJECT_NAME).sif"
-	@apptainer run $(PROJECT_NAME).sif -jar /app/flare.jar
+	@apptainer run $(PROJECT_NAME).sif -jar /opt/java/flare.jar
 
 clean:
 	@docker rmi -f --no-prune $(IMAGE)
