@@ -6,12 +6,18 @@ ARG RUN_CMD
 
 RUN apt -y update -qq && apt -y upgrade && \
 	DEBIAN_FRONTEND=noninteractive apt -y install \
-	ca-certificates curl $RUN_CMD
+	ca-certificates curl default-jdk-headless
+
+ARG BEAGLE=beagle.22Jul22.46e.jar
+ARG CLASSPATH=/usr/src/
+WORKDIR ${CLASSPATH}
+COPY --chmod=555 jar/ .
+RUN ln -s ${BEAGLE} beagle.jar
 
 ARG TEST="/test.sh"
-COPY src/test/$RUN_CMD.sh ${TEST}
-RUN chmod ugo+rx ${TEST}
+COPY --chmod=555 src/test/$RUN_CMD.sh ${TEST}
 
 ARG ARG ENTRY="/entrypoint.sh"
 RUN echo "#!/bin/bash\n$RUN_CMD \$@" > ${ENTRY} && chmod ugo+rx ${ENTRY}
 ENTRYPOINT [ "/entrypoint.sh" ]
+
