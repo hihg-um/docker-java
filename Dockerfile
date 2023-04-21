@@ -16,6 +16,8 @@ ENV USERNAME=${USERNAME:-nouser} \
 	USERGNAME=${USERGNAME:-users} \
 	USERGID=${USERGID:-nogroup}
 
+ARG BEAGLE=beagle.22Jul22.46e.jar
+
 # match the building user. This will allow output only where the building
 # user has write permissions
 RUN groupadd -g $USERGID $USERGNAME && \
@@ -33,6 +35,9 @@ RUN apt -y update -qq && apt -y upgrade && \
 		openjdk-17-jdk-headless
 
 WORKDIR /app
+
+COPY --chown=${USERID}:users jar/ /app/
+RUN chmod u+x /app/${BEAGLE} && ln -s /app/${BEAGLE} /app/beagle.jar
 
 # we map the user owning the image so permissions for i/o will work
 USER $USERNAME
