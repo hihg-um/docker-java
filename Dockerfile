@@ -17,6 +17,7 @@ ENV USERNAME=${USERNAME:-nouser} \
 	USERGID=${USERGID:-nogroup}
 
 ARG BEAGLE=beagle.22Jul22.46e.jar
+ARG JAR_PATH=/opt/java/bin
 
 # match the building user. This will allow output only where the building
 # user has write permissions
@@ -36,8 +37,9 @@ RUN apt -y update -qq && apt -y upgrade && \
 
 WORKDIR /app
 
-COPY --chown=${USERID}:users jar/ /app/
-RUN chmod u+x /app/${BEAGLE} && ln -s /app/${BEAGLE} /app/beagle.jar
+COPY --chown=${USERID}:users jar/ /opt/java/bin
+RUN chmod u+x ${JAR_PATH}/${BEAGLE} && ln -s ${JAR_PATH}/${BEAGLE} /${JAR_PATH}/beagle.jar
+ENV CLASSPATH=${CLASSPATH}:/opt/java/bin
 
 # we map the user owning the image so permissions for i/o will work
 USER $USERNAME

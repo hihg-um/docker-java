@@ -26,11 +26,11 @@ test: test_docker test_singularity
 
 test_docker:
 	@echo "Testing docker image: $(IMAGE)"
-	@docker run -it -v /mnt:/mnt $(IMAGE) -jar /app/beagle.jar
+	@docker run -it -v `pwd`:/app $(IMAGE) -jar /opt/java/bin/beagle.jar
 
 test_singularity: $(PROJECT_NAME).sif
 	@echo "Testing singularity image: $(PROJECT_NAME).sif"
-	@apptainer run $(PROJECT_NAME).sif -jar /app/beagle.jar
+	@apptainer run $(PROJECT_NAME).sif -jar /opt/java/bin/beagle.jar
 
 clean:
 	@docker rmi -f --no-prune $(IMAGE)
