@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0
 
 ORG_NAME := hihg-um
-PROJECT_NAME ?= java-beagle
+PROJECT_NAME ?= beagle
 OS_BASE ?= ubuntu
 OS_VER ?= 22.04
 
