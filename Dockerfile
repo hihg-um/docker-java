@@ -35,11 +35,9 @@ RUN apt -y update -qq && apt -y upgrade && \
 		less \
 		openjdk-17-jdk-headless
 
-WORKDIR /app
+COPY --chown=${USERID}:${USERGID} jar/beagle*.jar /opt/java/bin/beagle.jar
 
-COPY --chown=${USERID}:users jar/ /opt/java/bin
-RUN chmod u+x ${JAR_PATH}/${BEAGLE} && ln -s ${JAR_PATH}/${BEAGLE} /${JAR_PATH}/beagle.jar
-ENV CLASSPATH=${CLASSPATH}:/opt/java/bin
+WORKDIR /app
 
 # we map the user owning the image so permissions for i/o will work
 USER $USERNAME
