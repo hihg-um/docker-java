@@ -6,7 +6,7 @@ OS_BASE ?= ubuntu
 OS_VER ?= 22.04
 
 USER ?= `whoami`
-USERID := `id -u`
+USERID ?= `id -u`
 USERGNAME ?= ad
 USERGID ?= 1533
 
