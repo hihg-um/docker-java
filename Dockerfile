@@ -2,16 +2,6 @@
 ARG BASE_IMAGE
 FROM $BASE_IMAGE
 
-# Install OS updates, security fixes and utils
 RUN apt -y update -qq && apt -y upgrade && \
-	DEBIAN_FRONTEND=noninteractive apt -y install \
-		ca-certificates \
-		curl \
-		dirmngr \
-		git \
-		less \
-		openjdk-17-jdk-headless
-
-WORKDIR /app
-
-ENTRYPOINT [ "java" ]
+    DEBIAN_FRONTEND=noninteractive apt -y install \
+    default-jdk
