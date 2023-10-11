@@ -5,20 +5,14 @@ PROJECT_NAME ?= java
 OS_BASE ?= ubuntu
 OS_VER ?= 22.04
 
-USER ?= `whoami`
-USERID := `id -u`
-USERGNAME ?= ad
-USERGID ?= 1533
-
 IMAGE_REPOSITORY :=
 IMAGE := $(ORG_NAME)/$(USER)/$(PROJECT_NAME):latest
 
 GIT_HASH ?= $(shell git log --format="%h" -n 1)
 
-# Use this for debugging builds. Turn off for a more slick build log
 DOCKER_BUILD_ARGS :=
 
-.PHONY: all build clean docker docker-flare test test_docker test_singularity
+.PHONY: all build clean docker test test_docker test_singularity
 
 all: docker $(PROJECT_NAME).sif test
 
@@ -40,23 +34,7 @@ docker:
 	@docker build -t $(IMAGE) \
 		$(DOCKER_BUILD_ARGS) \
 		--build-arg BASE_IMAGE=$(OS_BASE):$(OS_VER) \
-		--build-arg USERNAME=$(USER) \
-		--build-arg USERID=$(USERID) \
-		--build-arg USERGNAME=$(USERGNAME) \
-		--build-arg USERGID=$(USERGID) \
 		.
-
-docker-flare:
-	IMAGE := $(ORG_NAME)/$(USER)/$@:latest
-	@docker build -t $(IMAGE) \
-		$(DOCKER_BUILD_ARGS) \
-		--build-arg BASE_IMAGE=$(OS_BASE):$(OS_VER) \
-		--build-arg USERNAME=$(USER) \
-		--build-arg USERID=$(USERID) \
-		--build-arg USERGNAME=$(USERGNAME) \
-		--build-arg USERGID=$(USERGID) \
-		.
-
 
 $(PROJECT_NAME).sif:
 	@apptainer build $(PROJECT_NAME).sif docker-daemon:$(IMAGE)
