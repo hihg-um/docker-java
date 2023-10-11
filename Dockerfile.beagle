@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: GPL-2.0
+ARG BASE_IMAGE
+FROM $BASE_IMAGE as builder
+
+ARG RUNCMD
+ARG BEAGLE=beagle.22Jul22.46e.jar
+ARG JAR_PATH=/opt/java/bin
+
+COPY jar/$BEAGLE $JAR_PATH/beagle.jar
+
+WORKDIR /app
+
+ENTRYPOINT [ "java" ]
