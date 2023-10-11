@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: GPL-2.0
+ARG BASE_IMAGE
+FROM $BASE_IMAGE as builder
+
+ARG RUNCMD
+
+RUN DEBIAN_FRONTEND=noninteractive apt -y install \
+    git
+
+WORKDIR /src
+RUN git clone -b buildfix https://github.com/hihg-um/flare.git
+RUN javac -cp flare/src/ flare/src/admix/AdmixMain.java
+RUN jar cfe flare.jar admix/AdmixMain -C flare/src/ ./
+RUN jar -i flare.jar
+
+FROM $BASE_IMAGE as release
+
+ARG JAR_PATH=/opt/java/bin
+COPY --from=builder /src/flare.jar $JAR_PATH/flare.jar
+RUN chmod 555 $JAR_PATH/flare.jar
+
+WORKDIR /app
+
+ENTRYPOINT [ "java" ]
