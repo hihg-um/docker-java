@@ -8,7 +8,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt -y install \
     git
 
 WORKDIR /src
-RUN git clone -b buildfix https://github.com/hihg-um/flare.git
+RUN git clone https://github.com/hihg-um/flare.git
 RUN javac -cp flare/src/ flare/src/admix/AdmixMain.java
 RUN jar cfe flare.jar admix/AdmixMain -C flare/src/ ./
 RUN jar -i flare.jar
