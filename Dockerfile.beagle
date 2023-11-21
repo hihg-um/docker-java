@@ -3,10 +3,18 @@ ARG BASE_IMAGE
 FROM $BASE_IMAGE as builder
 
 ARG RUNCMD
-ARG BEAGLE=beagle.22Jul22.46e.jar
-ARG JAR_PATH=/opt/java/bin
 
-COPY jar/$BEAGLE $JAR_PATH/beagle.jar
+RUN DEBIAN_FRONTEND=noninteractive apt -y install \
+    wget
+
+WORKDIR /src
+RUN wget http://faculty.washington.edu/browning/beagle/beagle.22Jul22.46e.jar -O beagle.jar
+
+FROM $BASE_IMAGE as release
+
+ARG JAR_PATH=/opt/java/bin
+COPY --from=builder /src/beagle.jar $JAR_PATH/beagle.jar
+RUN chmod 555 $JAR_PATH/beagle.jar
 
 WORKDIR /app
 
