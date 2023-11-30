@@ -59,7 +59,7 @@ $(TOOLS):
 		$(DOCKER_BUILD_ARGS) \
 		-f ./Dockerfile.$@ \
 		--build-arg BASE_IMAGE=$(DOCKER_IMAGE_BASE)/$(DOCKER_BASE) \
-		--build-arg RUNCMD="$@" \
+		--build-arg RUN_CMD=$@ \
 		.
 
 docker_test:
