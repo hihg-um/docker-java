@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0
 ORG_NAME := hihg-um
 OS_BASE ?= ubuntu
-OS_VER ?= 22.04
+OS_VER ?= 23.10
 
 IMAGE_REPOSITORY ?=
 DOCKER_IMAGE_BASE := $(ORG_NAME)
