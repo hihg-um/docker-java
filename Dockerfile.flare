@@ -2,8 +2,6 @@
 ARG BASE_IMAGE
 FROM $BASE_IMAGE as builder
 
-ARG RUNCMD
-
 RUN DEBIAN_FRONTEND=noninteractive apt -y install \
     git
 
@@ -19,6 +17,7 @@ ARG JAR_PATH=/opt/java/bin
 COPY --from=builder /src/flare.jar $JAR_PATH/flare.jar
 RUN chmod 555 $JAR_PATH/flare.jar
 
-WORKDIR /app
-
-ENTRYPOINT [ "java" ]
+# Create an entrypoint for the binary
+RUN echo "#!/bin/bash\njava -jar $JAR_PATH/flare.jar \$@" > /entrypoint.sh && \
+	chmod +x /entrypoint.sh
+ENTRYPOINT [ "/entrypoint.sh" ]
