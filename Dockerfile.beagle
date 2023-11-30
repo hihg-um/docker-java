@@ -1,20 +1,13 @@
 # SPDX-License-Identifier: GPL-2.0
 ARG BASE_IMAGE
-FROM $BASE_IMAGE as builder
+FROM $BASE_IMAGE
+
+ARG RUN_CMD
 
 RUN DEBIAN_FRONTEND=noninteractive apt -y install \
-    wget
-
-WORKDIR /src
-RUN wget http://faculty.washington.edu/browning/beagle/beagle.22Jul22.46e.jar -O beagle.jar
-
-FROM $BASE_IMAGE as release
-
-ARG JAR_PATH=/opt/java/bin
-COPY --from=builder /src/beagle.jar $JAR_PATH/beagle.jar
-RUN chmod 555 $JAR_PATH/beagle.jar
+    apt-utils $RUN_CMD
 
 # Create an entrypoint for the binary
-RUN echo "#!/bin/bash\njava -jar $JAR_PATH/beagle.jar \$@" > /entrypoint.sh && \
+RUN echo "#!/bin/bash\n$RUN_CMD \$@" > /entrypoint.sh && \
 	chmod +x /entrypoint.sh
 ENTRYPOINT [ "/entrypoint.sh" ]
