@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0
-ORG_NAME := hihg-um
+
+ORG_NAME ?= hihg-um
 OS_BASE ?= ubuntu
 OS_VER ?= 23.10
 
