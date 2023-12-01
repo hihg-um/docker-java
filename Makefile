@@ -8,7 +8,7 @@ IMAGE_REPOSITORY ?=
 
 TOOLS := beagle flare
 
-DOCKER_BUILD_ARGS :=
+DOCKER_BUILD_ARGS ?=
 DOCKER_TAG ?= $(shell git describe --tags --broken --dirty --all --long | \
 			sed "s,heads/,," | sed "s,tags/,,")
 DOCKER_BASE ?= $(patsubst docker-%,%,$(shell basename \
@@ -16,6 +16,8 @@ DOCKER_BASE ?= $(patsubst docker-%,%,$(shell basename \
 		cut -f2 | cut -d ' ' -f1` | sed 's/.git//'))
 DOCKER_IMAGES := $(TOOLS:=\:$(DOCKER_TAG))
 SIF_IMAGES := $(TOOLS:=\:$(DOCKER_TAG).sif)
+
+IMAGE_TEST_ARGS ?=
 
 .PHONY: apptainer_clean apptainer_test \
 	docker_base docker_clean docker_test docker_release $(TOOLS)
