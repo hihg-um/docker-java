@@ -2,22 +2,26 @@
 ARG BASE_IMAGE
 FROM $BASE_IMAGE as builder
 
-RUN DEBIAN_FRONTEND=noninteractive apt -y install \
-    git
+RUN DEBIAN_FRONTEND=noninteractive apt -y install git
 
 WORKDIR /src
-RUN git clone https://github.com/hihg-um/flare.git
-RUN javac -cp flare/src/ flare/src/admix/AdmixMain.java
-RUN jar cfe flare.jar admix/AdmixMain -C flare/src/ ./
-RUN jar -i flare.jar
+RUN git clone https://github.com/hihg-um/flare.git  && \
+	javac -cp flare/src/ flare/src/admix/AdmixMain.java && \
+	jar cfe flare.jar admix/AdmixMain -C flare/src/ ./ && \
+	jar -i flare.jar
 
 FROM $BASE_IMAGE as release
 
-ARG JAR_PATH=/opt/java/bin
+ARG RUN_CMD
+ENV RUN_CMD=${RUN_CMD}
+
+ENV JAR_PATH=/opt/java/bin
 COPY --from=builder /src/flare.jar $JAR_PATH/flare.jar
 RUN chmod 555 $JAR_PATH/flare.jar
 
+COPY src/test/$RUN_CMD.sh /test.sh
+
 # Create an entrypoint for the binary
-RUN echo "#!/bin/bash\njava -jar $JAR_PATH/flare.jar \$@" > /entrypoint.sh && \
-	chmod +x /entrypoint.sh
+RUN echo "#!/bin/bash\njava -jar $JAR_PATH/flare.jar \$@" \
+	> /entrypoint.sh && chmod +x /entrypoint.sh
 ENTRYPOINT [ "/entrypoint.sh" ]

@@ -4,4 +4,4 @@ FROM $BASE_IMAGE
 
 RUN apt -y update -qq && apt -y upgrade && \
     DEBIAN_FRONTEND=noninteractive apt -y install \
-    default-jdk
+	    default-jdk-headless
