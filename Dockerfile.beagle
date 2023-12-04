@@ -1,11 +1,12 @@
 # SPDX-License-Identifier: GPL-2.0
 ARG BASE_IMAGE
-FROM $BASE_IMAGE
+FROM ubuntu:23.10
 
 ARG RUN_CMD
 
-RUN DEBIAN_FRONTEND=noninteractive apt -y install \
-    apt-utils $RUN_CMD
+RUN apt -y update -qq && apt -y upgrade && \
+	DEBIAN_FRONTEND=noninteractive apt -y install \
+	ca-certificates curl $RUN_CMD
 
 COPY src/test/$RUN_CMD.sh /test.sh
 
