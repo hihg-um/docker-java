@@ -16,8 +16,7 @@ ARG RUN_CMD
 ENV RUN_CMD=${RUN_CMD}
 
 ENV JAR_PATH=/opt/java/bin
-COPY --from=builder /src/flare.jar $JAR_PATH/flare.jar
-RUN chmod 555 $JAR_PATH/flare.jar
+COPY --from=builder --chmod0444 /src/flare.jar $JAR_PATH/flare.jar
 
 ARG TEST="/test.sh"
 COPY src/test/$RUN_CMD.sh ${TEST}
