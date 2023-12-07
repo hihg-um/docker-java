@@ -1,12 +1,10 @@
 # SPDX-License-Identifier: GPL-2.0
 ARG BASE_IMAGE
-FROM ubuntu:23.10
+FROM $BASE_IMAGE
+
+LABEL org.opencontainers.image.description="Java environment for Beagle. See https://github.com/hihg-um/docker-analytics for a packaged release of Beagle"
 
 ARG RUN_CMD
-
-RUN apt -y update -qq && apt -y upgrade && \
-	DEBIAN_FRONTEND=noninteractive apt -y install \
-	ca-certificates curl $RUN_CMD
 
 ARG TEST="/test.sh"
 COPY --chmod=0555 src/test/$RUN_CMD.sh ${TEST}
