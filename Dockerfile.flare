@@ -17,13 +17,14 @@ FROM $BASE_IMAGE
 ARG RUN_CMD
 ENV RUN_CMD=${RUN_CMD}
 
-ENV JAR_PATH=/opt/java/bin
-COPY --from=builder /src/flare.jar $JAR_PATH/flare.jar
-RUN chmod 555 $JAR_PATH/flare.jar
+ENV JAR_PATH=/opt/java/bin/flare.jar
+COPY --from=builder /src/flare.jar ${JAR_PATH}
+RUN chmod 555 ${JAR_PATH}
 
 ARG TEST="/test.sh"
 COPY --chmod=0555 src/test/$RUN_CMD.sh ${TEST}
 
 ARG ARG ENTRY="/entrypoint.sh"
-RUN echo "#!/bin/bash\njava -jar ${JAR_PATH}/flare.jar \$@" > ${ENTRY} && chmod ugo+rx ${ENTRY}
+RUN echo "#!/bin/bash\njava \${JAVA_FLARE_OPTS} -jar ${JAR_PATH} \$@" \
+	> ${ENTRY} && chmod ugo+rx ${ENTRY}
 ENTRYPOINT [ "/entrypoint.sh" ]
