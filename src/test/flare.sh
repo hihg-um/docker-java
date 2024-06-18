@@ -1,3 +1,4 @@
 #!/bin/bash
-
-java -jar $JAR_PATH/flare.jar
+# SPDX-License-Identifier: GPL-3.0
+#
+java -jar ${CLASSPATH}/flare.jar
