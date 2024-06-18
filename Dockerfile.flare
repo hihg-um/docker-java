@@ -13,18 +13,11 @@ RUN git clone https://github.com/hihg-um/flare.git  && \
 	jar -i flare.jar
 
 FROM $BASE_IMAGE
-
 ARG RUN_CMD
-ENV RUN_CMD=${RUN_CMD}
 
-ENV JAR_PATH=/opt/java/bin/flare.jar
-COPY --from=builder /src/flare.jar ${JAR_PATH}
-RUN chmod 555 ${JAR_PATH}
+COPY --from=builder --chmod=0444 /src/flare.jar ${CLASSPATH}/
 
-ARG TEST="/test.sh"
-COPY --chmod=0555 src/test/$RUN_CMD.sh ${TEST}
+COPY --chmod=0555 src/test/$RUN_CMD.sh /test.sh
+COPY --chmod=0555 src/run/$RUN_CMD.sh /
 
-ARG ARG ENTRY="/entrypoint.sh"
-RUN echo "#!/bin/bash\njava \${JAVA_FLARE_OPTS} -jar ${JAR_PATH} \$@" \
-	> ${ENTRY} && chmod ugo+rx ${ENTRY}
-ENTRYPOINT [ "/entrypoint.sh" ]
+ENTRYPOINT [ "/flare.sh" ]

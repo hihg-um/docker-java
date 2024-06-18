@@ -4,6 +4,8 @@ FROM $BASE_IMAGE
 
 LABEL org.opencontainers.image.description="Java common base image"
 
+ENV CLASSPATH=/opt/java/bin
+
 # Install OS updates, security fixes and utils, generic app dependencies
 RUN apt -y update -qq && apt -y upgrade && \
 	DEBIAN_FRONTEND=noninteractive apt -y install \
