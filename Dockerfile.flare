@@ -4,12 +4,12 @@ FROM $BASE as builder
 
 RUN apt -y update -qq && DEBIAN_FRONTEND=noninteractive apt -y install \
 	--no-install-recommends --no-install-suggests \
-	git \
-	default-jdk-headless
+		default-jdk-headless \
+		git
 
 ARG JAR_PKG=flare.jar
 
-WORKDIR /src
+WORKDIR /usr/src
 RUN git clone https://github.com/hihg-um/flare.git  && \
 	javac -cp flare/src/ flare/src/admix/AdmixMain.java && \
 	jar cfe ${JAR_PKG} admix/AdmixMain -C flare/src/ ./ && \
@@ -21,7 +21,7 @@ ARG RUN_CMD
 ARG BUILD_REPO
 ARG BUILD_TIME
 
-COPY --from=builder --chmod=0444 /src/flare.jar ${CLASSPATH}/
+COPY --from=builder --chmod=0444 /usr/src/flare.jar ${CLASSPATH}/
 
 COPY --chmod=0555 src/test/$RUN_CMD.sh /test.sh
 COPY --chmod=0555 src/run/$RUN_CMD.sh /
