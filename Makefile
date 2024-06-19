@@ -5,7 +5,7 @@ ORG_NAME ?= hihg-um
 OS_BASE ?= ubuntu
 OS_VER ?= 24.04
 
-TOOLS := beagle flare
+TOOLS := beagle flare java javac
 
 ifneq ($(IMAGE_REPO),)
     DOCKER_REPO := $(IMAGE_REPO)/$(ORG_NAME)
