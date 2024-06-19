@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: GPL-2.0
-ARG BASE_IMAGE
-FROM $BASE_IMAGE
+ARG BASE
+FROM $BASE
 
-ARG BASE_IMAGE
+ARG BASE
 ARG RUN_CMD
 
 LABEL org.opencontainers.image.description="Java environment for Beagle. See https://github.com/hihg-um/docker-analytics for a packaged release of Beagle"

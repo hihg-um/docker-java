@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0
-ARG BASE_IMAGE
-FROM $BASE_IMAGE
+ARG BASE
+FROM $BASE
 
 LABEL org.opencontainers.image.description="Java common base image"
 
