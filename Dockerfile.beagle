@@ -1,23 +1,44 @@
 # SPDX-License-Identifier: GPL-2.0
 ARG BASE
-FROM $BASE
+FROM $BASE as builder
 
-ARG BASE
-ARG RUN_CMD
-
-LABEL org.opencontainers.image.description="Java environment for Beagle. See https://github.com/hihg-um/docker-analytics for a packaged release of Beagle"
+RUN apt -y update -qq && DEBIAN_FRONTEND=noninteractive apt -y install \
+	--no-install-recommends --no-install-suggests \
+	curl
 
 WORKDIR ${CLASSPATH}
 
-# https://packages.ubuntu.com/noble/libhtsjdk-java
 # http://faculty.washington.edu/browning/beagle/beagle.27May24.118.jar
-ARG BEAGLE_URL_BASE="http://faculty.washington.edu/browning/beagle"
+ARG BEAGLE_URL_BASE="https://faculty.washington.edu/browning/beagle"
 ARG BEAGLE_REL=27May24.118
 ARG BEAGLE_JAR=beagle.${BEAGLE_REL}.jar
 RUN curl -sLO "${BEAGLE_URL_BASE}/${BEAGLE_JAR}" && \
 	chmod 0444 ${BEAGLE_JAR} && ln -s ${CLASSPATH}/${BEAGLE_JAR} beagle.jar
 
+FROM $BASE
+
+# build-args
+ARG BASE
+ARG RUN_CMD
+ARG BUILD_REPO
+ARG BUILD_TIME
+
+RUN apt -y update -qq && DEBIAN_FRONTEND=noninteractive apt -y install \
+	--no-install-recommends --no-install-suggests \
+	libhtsjdk-java \
+	&& \
+	apt -y clean && rm -rf /var/lib/apt/lists/* /tmp/*
+
+COPY --from=builder --chmod=0444 ${CLASSPATH} ${CLASSPATH}
+
 COPY --chmod=0555 src/test/$RUN_CMD.sh /test.sh
 COPY --chmod=0555 src/run/$RUN_CMD.sh /
 
 ENTRYPOINT [ "/beagle.sh" ]
+
+LABEL org.opencontainers.image.base.digest=""
+LABEL org.opencontainers.image.base.name="$BASE"
+LABEL org.opencontainers.image.created="$BUILD_TIME"
+LABEL org.opencontainers.image.description="Beagle: https://faculty.washington.edu/browning/beagle/beagle.html"
+LABEL org.opencontainers.image.title="${RUN_CMD}"
+LABEL org.opencontainers.image.url="${BUILD_REPO}"
