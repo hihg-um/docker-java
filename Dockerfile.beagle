@@ -1,6 +1,14 @@
 # SPDX-License-Identifier: GPL-2.0
 ARG BASE
-FROM $BASE as builder
+FROM $BASE as base
+
+RUN apt -y update -qq && DEBIAN_FRONTEND=noninteractive apt -y install \
+	--no-install-recommends --no-install-suggests \
+	libhtsjdk-java \
+	&& \
+	apt -y clean && rm -rf /var/lib/apt/lists/* /tmp/*
+
+FROM base as builder
 
 RUN apt -y update -qq && DEBIAN_FRONTEND=noninteractive apt -y install \
 	--no-install-recommends --no-install-suggests \
@@ -15,19 +23,13 @@ ARG BEAGLE_JAR=beagle.${BEAGLE_REL}.jar
 RUN curl -sLO "${BEAGLE_URL_BASE}/${BEAGLE_JAR}" && \
 	chmod 0444 ${BEAGLE_JAR} && ln -s ${CLASSPATH}/${BEAGLE_JAR} beagle.jar
 
-FROM $BASE
+FROM base
 
 # build-args
 ARG BASE
 ARG RUN_CMD
 ARG BUILD_REPO
 ARG BUILD_TIME
-
-RUN apt -y update -qq && DEBIAN_FRONTEND=noninteractive apt -y install \
-	--no-install-recommends --no-install-suggests \
-	libhtsjdk-java \
-	&& \
-	apt -y clean && rm -rf /var/lib/apt/lists/* /tmp/*
 
 COPY --from=builder --chmod=0444 ${CLASSPATH} ${CLASSPATH}
 
