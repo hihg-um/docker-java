@@ -2,18 +2,24 @@
 ARG BASE
 FROM $BASE as builder
 
-LABEL org.opencontainers.image.description="Java environment for https://github.com/hihg-um/flare.git"
+RUN apt -y update -qq && DEBIAN_FRONTEND=noninteractive apt -y install \
+	--no-install-recommends --no-install-suggests \
+	git \
+	default-jdk-headless
 
-RUN DEBIAN_FRONTEND=noninteractive apt -y install git
+ARG JAR_PKG=flare.jar
 
 WORKDIR /src
 RUN git clone https://github.com/hihg-um/flare.git  && \
 	javac -cp flare/src/ flare/src/admix/AdmixMain.java && \
-	jar cfe flare.jar admix/AdmixMain -C flare/src/ ./ && \
-	jar -i flare.jar
+	jar cfe ${JAR_PKG} admix/AdmixMain -C flare/src/ ./ && \
+	jar -i ${JAR_PKG}
 
 FROM $BASE
+ARG BASE
 ARG RUN_CMD
+ARG BUILD_REPO
+ARG BUILD_TIME
 
 COPY --from=builder --chmod=0444 /src/flare.jar ${CLASSPATH}/
 
@@ -21,3 +27,10 @@ COPY --chmod=0555 src/test/$RUN_CMD.sh /test.sh
 COPY --chmod=0555 src/run/$RUN_CMD.sh /
 
 ENTRYPOINT [ "/flare.sh" ]
+
+LABEL org.opencontainers.image.base.digest=""
+LABEL org.opencontainers.image.base.name="$BASE"
+LABEL org.opencontainers.image.created="$BUILD_TIME"
+LABEL org.opencontainers.image.description="Flare: https://github.com/browning-lab/flare"
+LABEL org.opencontainers.image.title="${RUN_CMD}"
+LABEL org.opencontainers.image.url="${BUILD_REPO}"
