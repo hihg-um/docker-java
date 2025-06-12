@@ -16,9 +16,9 @@ RUN apt -y update -qq && DEBIAN_FRONTEND=noninteractive apt -y install \
 
 WORKDIR ${CLASSPATH}
 
-# http://faculty.washington.edu/browning/beagle/beagle.27May24.118.jar
+# http://faculty.washington.edu/browning/beagle/beagle.27Feb25.75f.jar
 ARG BEAGLE_URL_BASE="https://faculty.washington.edu/browning/beagle"
-ARG BEAGLE_REL=27May24.118
+ARG BEAGLE_REL=27Feb25.75f
 ARG BEAGLE_JAR=beagle.${BEAGLE_REL}.jar
 RUN curl -sLO "${BEAGLE_URL_BASE}/${BEAGLE_JAR}" && \
 	chmod 0444 ${BEAGLE_JAR} && ln -s ${CLASSPATH}/${BEAGLE_JAR} beagle.jar
